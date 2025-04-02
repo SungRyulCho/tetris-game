@@ -362,3 +362,25 @@ document.getElementById("high-score").innerText = highScore;
 playerReset();
 updateScore();
 update();
+
+// 📱 모바일 조작용 함수
+function move(dir) {
+  if (!running) return;
+  if (dir === "left") {
+    player.pos.x--;
+    if (collide(arena, player)) player.pos.x++;
+  } else if (dir === "right") {
+    player.pos.x++;
+    if (collide(arena, player)) player.pos.x--;
+  }
+}
+
+function rotate() {
+  if (!running) return;
+  playerRotate(1);
+}
+
+function drop() {
+  if (!running) return;
+  playerDrop();
+}

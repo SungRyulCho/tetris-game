@@ -19,6 +19,15 @@
           <canvas id="next" width="80" height="80"></canvas>
         </div>
       </div>
+
+      <!-- 📱 모바일 조작 버튼 -->
+      <div class="mobile-controls">
+        <button onclick="move('left')">◀</button>
+        <button onclick="rotate()">⟳</button>
+        <button onclick="move('right')">▶</button>
+        <button onclick="drop()">▼</button>
+      </div>
+
       <div id="overlay">
         <div class="game-over-box">
           <h2>🎮 Game Over</h2>
@@ -27,6 +36,7 @@
       </div>
       <div id="stage-popup"></div>
     </div>
+
     <script src="script.js"></script>
   </body>
 </html>
