@@ -1,0 +1,130 @@
+/* 전체 배경 및 폰트 설정 */
+body {
+  margin: 0;
+  background-color: #1b1e2b;
+  color: #fff;
+  font-family: "Segoe UI", sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 제목 스타일 */
+.title {
+  font-size: 42px;
+  margin-top: 30px;
+  text-align: center;
+}
+
+/* 캔버스와 점수판을 감싸는 박스 */
+.center-box {
+  position: relative;
+  width: 300px; /* 캔버스 너비와 동일 */
+  margin: 0 auto;
+}
+
+/* 메인 테트리스 캔버스 */
+canvas#tetris {
+  background-color: #18181f;
+  border: 3px solid #3a3c50;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+  display: block;
+}
+
+/* 점수판 스타일 */
+#score-container {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  margin-left: 30px;
+  background: linear-gradient(180deg, #7f5af0, #ae7dfb);
+  padding: 20px;
+  border-radius: 12px;
+  width: 120px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  font-size: 14px;
+}
+
+#score-container p {
+  margin: 12px 0;
+  font-weight: bold;
+}
+
+#score-container span {
+  font-size: 20px;
+  font-weight: bold;
+  display: block;
+  margin-top: 4px;
+}
+
+/* 미리보기 블록 */
+#next {
+  margin-top: 10px;
+  background-color: #000;
+  border-radius: 6px;
+}
+
+/* 게임 오버 화면 */
+#overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+#overlay.show {
+  display: flex;
+}
+
+.game-over-box {
+  text-align: center;
+  background-color: #2e2e38;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+}
+
+/* 재시작 버튼 */
+#restart-btn {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background-color: #ff6188;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+#restart-btn:hover {
+  background-color: #e4476c;
+}
+
+/* 스테이지 업 팝업 */
+#stage-popup {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  color: #000;
+  padding: 20px 40px;
+  font-size: 28px;
+  font-weight: bold;
+  border-radius: 10px;
+  display: none;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+  z-index: 99;
+}
+
+#stage-popup.show {
+  display: block;
+}

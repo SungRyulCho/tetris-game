@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🎮 Modern Tetris</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="game-container">
+      <h1 class="title">🎮 Modern Tetris</h1>
+      <div class="center-box">
+        <canvas id="tetris" width="300" height="600"></canvas>
+        <div id="score-container">
+          <p><strong>STAGE</strong><br /><span id="stage">1</span></p>
+          <p><strong>SCORE</strong><br /><span id="score">0</span></p>
+          <p><strong>BEST</strong><br /><span id="high-score">0</span></p>
+          <p><strong>NEXT</strong></p>
+          <canvas id="next" width="80" height="80"></canvas>
+        </div>
+      </div>
+      <div id="overlay">
+        <div class="game-over-box">
+          <h2>🎮 Game Over</h2>
+          <button id="restart-btn">Restart</button>
+        </div>
+      </div>
+      <div id="stage-popup"></div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
