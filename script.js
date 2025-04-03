@@ -29,14 +29,15 @@ const colors = [
   "#66D9EF",
   "#FF9AC1",
   "#ffffff",
-  "#ff4444",
+  "#ff4444", // 폭탄 블록
 ];
 
 const pieces = "ILJOTSZU";
 
 function getRandomPiece() {
-  const isBomb = Math.random() < 0.1;
-  return isBomb ? "B" : pieces[(Math.random() * pieces.length) | 0];
+  return Math.random() < 0.1
+    ? "B"
+    : pieces[(Math.random() * pieces.length) | 0];
 }
 
 function createPiece(type) {
@@ -113,9 +114,9 @@ function createMatrix(w, h) {
 
 function drawMatrix(matrix, offset, ctx = context) {
   matrix.forEach((row, y) =>
-    row.forEach((v, x) => {
-      if (v) {
-        ctx.fillStyle = colors[v];
+    row.forEach((value, x) => {
+      if (value !== 0) {
+        ctx.fillStyle = colors[value];
         ctx.fillRect(x + offset.x, y + offset.y, 1, 1);
       }
     })
@@ -133,22 +134,23 @@ function drawNext() {
 
 function collide(arena, player) {
   const [m, o] = [player.matrix, player.pos];
-  for (let y = 0; y < m.length; y++)
-    for (let x = 0; x < m[y].length; x++)
-      if (m[y][x] && arena[y + o.y]?.[x + o.x] !== 0) return true;
+  for (let y = 0; y < m.length; ++y)
+    for (let x = 0; x < m[y].length; ++x)
+      if (m[y][x] !== 0 && arena[y + o.y]?.[x + o.x] !== 0) return true;
   return false;
 }
 
 function merge(arena, player) {
-  player.matrix.forEach((row, y) => {
-    row.forEach((v, x) => {
-      if (!v) return;
-      const py = y + player.pos.y,
-        px = x + player.pos.x;
-      if (v === 10) explodeBomb(px, py);
-      else arena[py][px] = v;
-    });
-  });
+  player.matrix.forEach((row, y) =>
+    row.forEach((value, x) => {
+      if (value !== 0) {
+        const py = y + player.pos.y;
+        const px = x + player.pos.x;
+        if (value === 10) explodeBomb(px, py);
+        else arena[py][px] = value;
+      }
+    })
+  );
 }
 
 function flashRow(y) {
@@ -166,8 +168,8 @@ function flashRow(y) {
 
 async function arenaSweep() {
   let rowCount = 1;
-  for (let y = arena.length - 1; y >= 0; y--) {
-    const filled = arena[y].filter((v) => v !== 0).length;
+  outer: for (let y = arena.length - 1; y >= 0; --y) {
+    const filled = arena[y].filter((cell) => cell !== 0).length;
     if (filled / arena[y].length < 0.9) continue;
     await flashRow(y);
     arena.splice(y, 1);
@@ -223,17 +225,10 @@ function playerRotate(dir) {
 }
 
 function rotate(matrix, dir) {
-  for (let y = 0; y < matrix.length; y++)
-    for (let x = 0; x < y; x++)
+  for (let y = 0; y < matrix.length; ++y)
+    for (let x = 0; x < y; ++x)
       [matrix[x][y], matrix[y][x]] = [matrix[y][x], matrix[x][y]];
   dir > 0 ? matrix.forEach((row) => row.reverse()) : matrix.reverse();
-}
-
-function showStagePopup(stage) {
-  const popup = document.getElementById("stage-popup");
-  popup.innerText = `STAGE ${stage}`;
-  popup.classList.add("show");
-  setTimeout(() => popup.classList.remove("show"), 1500);
 }
 
 function updateScore() {
@@ -251,6 +246,13 @@ function updateScore() {
     localStorage.setItem("highScore", highScore);
     document.getElementById("high-score").innerText = highScore;
   }
+}
+
+function showStagePopup(stage) {
+  const popup = document.getElementById("stage-popup");
+  popup.innerText = `STAGE ${stage}`;
+  popup.classList.add("show");
+  setTimeout(() => popup.classList.remove("show"), 1500);
 }
 
 function gameOver() {
@@ -291,16 +293,15 @@ function draw() {
   drawMatrix(player.matrix, player.pos);
 }
 
-// 키보드 조작
-document.addEventListener("keydown", (e) => {
+document.addEventListener("keydown", (event) => {
   if (!bgmStarted) {
     sounds.bgm.volume = 0.3;
     sounds.bgm.play();
     bgmStarted = true;
   }
-  if (!running && e.key !== "Enter") return;
+  if (!running && event.key !== "Enter") return;
 
-  switch (e.key) {
+  switch (event.key) {
     case "ArrowLeft":
       move("left");
       break;
@@ -308,13 +309,13 @@ document.addEventListener("keydown", (e) => {
       move("right");
       break;
     case "ArrowDown":
-      playerDrop();
+      drop();
       break;
     case "ArrowUp":
       rotateBlock();
       break;
     case " ":
-      playerInstantDrop();
+      instantDrop();
       break;
     case "p":
     case "P":
@@ -326,7 +327,6 @@ document.addEventListener("keydown", (e) => {
 
 document.getElementById("restart-btn").addEventListener("click", restartGame);
 
-// 초기 설정
 const arena = createMatrix(10, 20);
 const player = { pos: { x: 0, y: 0 }, matrix: null, score: 0 };
 const next = { matrix: createPiece(getRandomPiece()) };
@@ -341,20 +341,21 @@ playerReset();
 updateScore();
 update();
 
-// 📱 모바일 전용 조작 함수
+// 📱 모바일 조작 함수
 function move(dir) {
   if (!running) return;
-  const dx = dir === "left" ? -1 : 1;
-  player.pos.x += dx;
-  if (collide(arena, player)) player.pos.x -= dx;
+  dir === "left" ? player.pos.x-- : player.pos.x++;
+  if (collide(arena, player)) player.pos.x += dir === "left" ? 1 : -1;
 }
-
 function rotateBlock() {
   if (!running) return;
   playerRotate(1);
 }
-
 function drop() {
   if (!running) return;
   playerDrop();
+}
+function instantDrop() {
+  if (!running) return;
+  playerInstantDrop();
 }

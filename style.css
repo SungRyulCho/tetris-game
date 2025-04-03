@@ -123,17 +123,18 @@ canvas#tetris {
   display: block;
 }
 
-/* 📱 모바일 대응 */
+/* ✅ 모바일용 조작 버튼 + 점수판 수평 배치 */
 .mobile-controls {
   display: none;
-  margin-top: 25px;
+  margin-top: 15px;
   gap: 10px;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .mobile-controls button {
-  font-size: 24px;
-  padding: 15px 20px;
+  font-size: 22px;
+  padding: 12px 16px;
   border-radius: 8px;
   border: none;
   margin: 5px;
@@ -142,46 +143,63 @@ canvas#tetris {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
+.mobile-only {
+  display: none;
+}
+
+.desktop-only {
+  display: block;
+}
+
+/* ✅ 모바일 전용 반응형 */
 @media (max-width: 768px) {
+  .title {
+    display: none;
+  }
+
   .center-box {
     flex-direction: column;
     align-items: center;
-    gap: 10px;
   }
 
   #score-container {
-    position: static;
-    background: none;
-    box-shadow: none;
-    width: auto;
-    padding: 0;
-    margin-top: 10px;
+    display: none;
   }
 
-  .score-row {
+  .mobile-only {
     display: flex;
-    justify-content: center;
-    gap: 10px;
   }
 
-  #score-container p {
-    margin: 0 6px;
-    font-size: 12px;
-    text-align: center;
-  }
-
-  #score-container span {
+  .score-bar {
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
     font-size: 14px;
+    background: linear-gradient(180deg, #7f5af0, #ae7dfb);
+    padding: 10px 0;
   }
 
-  #next {
+  .score-bar span {
+    font-size: 16px;
+    display: block;
+    margin-top: 4px;
+    font-weight: bold;
+  }
+
+  .mobile-preview {
+    flex-direction: column;
+    align-items: center;
+    margin: 10px 0;
+  }
+
+  .mobile-preview canvas {
     margin-top: 6px;
-    width: 60px;
-    height: 60px;
+    background: #000;
+    border-radius: 6px;
   }
 
   .mobile-controls {
     display: flex;
-    justify-content: center;
   }
 }

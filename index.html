@@ -10,30 +10,41 @@
     <div class="game-container">
       <h1 class="title">🎮 Modern Tetris</h1>
 
-      <!-- 점수 + 게임 캔버스 -->
+      <!-- 모바일용 점수판 상단 위치 -->
+      <div class="score-bar mobile-only">
+        <div><strong>STAGE</strong><br /><span id="stage">1</span></div>
+        <div><strong>SCORE</strong><br /><span id="score">0</span></div>
+        <div><strong>BEST</strong><br /><span id="high-score">0</span></div>
+      </div>
+
       <div class="center-box">
         <canvas id="tetris" width="300" height="600"></canvas>
 
-        <div id="score-container">
-          <div class="score-row">
-            <p><strong>STAGE</strong><br /><span id="stage">1</span></p>
-            <p><strong>SCORE</strong><br /><span id="score">0</span></p>
-            <p><strong>BEST</strong><br /><span id="high-score">0</span></p>
-          </div>
+        <!-- 웹용 점수판 우측 -->
+        <div id="score-container" class="desktop-only">
+          <p><strong>STAGE</strong><br /><span id="stage">1</span></p>
+          <p><strong>SCORE</strong><br /><span id="score">0</span></p>
+          <p><strong>BEST</strong><br /><span id="high-score">0</span></p>
           <p><strong>NEXT</strong></p>
           <canvas id="next" width="80" height="80"></canvas>
         </div>
       </div>
 
-      <!-- 모바일 조작 버튼 -->
-      <div class="mobile-controls">
+      <!-- 모바일용 블록 미리보기 -->
+      <div class="mobile-preview mobile-only">
+        <p><strong>NEXT</strong></p>
+        <canvas id="next" width="80" height="80"></canvas>
+      </div>
+
+      <!-- 📱 모바일 조작 버튼 -->
+      <div class="mobile-controls mobile-only">
         <button onclick="move('left')">◀</button>
         <button onclick="rotateBlock()">⟳</button>
         <button onclick="move('right')">▶</button>
         <button onclick="drop()">▼</button>
+        <button onclick="playerInstantDrop()">⤓</button>
       </div>
 
-      <!-- 게임 오버 화면 -->
       <div id="overlay">
         <div class="game-over-box">
           <h2>🎮 Game Over</h2>
@@ -41,10 +52,8 @@
         </div>
       </div>
 
-      <!-- 스테이지 팝업 -->
       <div id="stage-popup"></div>
     </div>
-
     <script src="script.js"></script>
   </body>
 </html>
