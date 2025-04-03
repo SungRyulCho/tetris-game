@@ -3,8 +3,11 @@ const context = canvas.getContext("2d");
 context.scale(30, 30);
 
 const nextCanvas = document.getElementById("next");
+const nextMobileCanvas = document.getElementById("next-mobile");
 const nextCtx = nextCanvas.getContext("2d");
+const nextMobileCtx = nextMobileCanvas?.getContext("2d");
 nextCtx.scale(20, 20);
+if (nextMobileCtx) nextMobileCtx.scale(20, 20);
 
 const sounds = {
   clear: new Audio("./sounds/clear.wav"),
@@ -29,7 +32,7 @@ const colors = [
   "#66D9EF",
   "#FF9AC1",
   "#ffffff",
-  "#ff4444", // 폭탄 블록
+  "#ff4444", // 폭탄
 ];
 
 const pieces = "ILJOTSZU";
@@ -124,12 +127,15 @@ function drawMatrix(matrix, offset, ctx = context) {
 }
 
 function drawNext() {
-  nextCtx.clearRect(0, 0, nextCanvas.width, nextCanvas.height);
-  const offset = {
-    x: Math.floor((nextCanvas.width / 20 - next.matrix[0].length) / 2),
-    y: Math.floor((nextCanvas.height / 20 - next.matrix.length) / 2),
-  };
-  drawMatrix(next.matrix, offset, nextCtx);
+  [nextCtx, nextMobileCtx].forEach((ctx) => {
+    if (!ctx) return;
+    ctx.clearRect(0, 0, 80, 80);
+    const offset = {
+      x: Math.floor(80 / 20 - next.matrix[0].length) / 2,
+      y: Math.floor(80 / 20 - next.matrix.length) / 2,
+    };
+    drawMatrix(next.matrix, offset, ctx);
+  });
 }
 
 function collide(arena, player) {
@@ -168,7 +174,7 @@ function flashRow(y) {
 
 async function arenaSweep() {
   let rowCount = 1;
-  outer: for (let y = arena.length - 1; y >= 0; --y) {
+  for (let y = arena.length - 1; y >= 0; --y) {
     const filled = arena[y].filter((cell) => cell !== 0).length;
     if (filled / arena[y].length < 0.9) continue;
     await flashRow(y);
@@ -232,19 +238,25 @@ function rotate(matrix, dir) {
 }
 
 function updateScore() {
-  document.getElementById("score").innerText = player.score;
   const stage = Math.floor(player.score / 100) + 1;
-  document.getElementById("stage").innerText = stage;
+  document
+    .querySelectorAll("#score")
+    .forEach((el) => (el.innerText = player.score));
+  document.querySelectorAll("#stage").forEach((el) => (el.innerText = stage));
+  document
+    .querySelectorAll("#high-score")
+    .forEach((el) => (el.innerText = highScore));
+
   dropInterval = 1000 - Math.min(900, (stage - 1) * 100);
   if (stage !== currentStage) {
     showStagePopup(stage);
     sounds.stageUp.play();
     currentStage = stage;
   }
+
   if (player.score > highScore) {
     highScore = player.score;
     localStorage.setItem("highScore", highScore);
-    document.getElementById("high-score").innerText = highScore;
   }
 }
 
@@ -300,7 +312,6 @@ document.addEventListener("keydown", (event) => {
     bgmStarted = true;
   }
   if (!running && event.key !== "Enter") return;
-
   switch (event.key) {
     case "ArrowLeft":
       move("left");
@@ -336,7 +347,9 @@ let lastTime = 0;
 let highScore = localStorage.getItem("highScore") || 0;
 let currentStage = 1;
 
-document.getElementById("high-score").innerText = highScore;
+document
+  .querySelectorAll("#high-score")
+  .forEach((el) => (el.innerText = highScore));
 playerReset();
 updateScore();
 update();
