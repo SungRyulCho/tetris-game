@@ -8,19 +8,27 @@
   </head>
   <body>
     <div class="game-container">
-      <h1 class="title">🎮 Modern Tetris</h1>
+      <h1 class="title desktop-only">🎮 Modern Tetris</h1>
 
-      <!-- 모바일용 점수판 상단 위치 -->
+      <!-- 모바일 전용 상단 점수판 + NEXT -->
       <div class="score-bar mobile-only">
         <div><strong>STAGE</strong><br /><span id="stage">1</span></div>
         <div><strong>SCORE</strong><br /><span id="score">0</span></div>
         <div><strong>BEST</strong><br /><span id="high-score">0</span></div>
+        <div>
+          <strong>NEXT</strong><br /><canvas
+            id="next-mobile"
+            width="60"
+            height="60"
+          ></canvas>
+        </div>
       </div>
 
+      <!-- 캔버스와 데스크탑용 점수판 -->
       <div class="center-box">
         <canvas id="tetris" width="300" height="600"></canvas>
 
-        <!-- 웹용 점수판 우측 -->
+        <!-- 웹용 점수판 -->
         <div id="score-container" class="desktop-only">
           <p><strong>STAGE</strong><br /><span id="stage">1</span></p>
           <p><strong>SCORE</strong><br /><span id="score">0</span></p>
@@ -30,19 +38,13 @@
         </div>
       </div>
 
-      <!-- 모바일용 블록 미리보기 -->
-      <div class="mobile-preview mobile-only">
-        <p><strong>NEXT</strong></p>
-        <canvas id="next" width="80" height="80"></canvas>
-      </div>
-
-      <!-- 📱 모바일 조작 버튼 -->
+      <!-- 모바일 조작 버튼 -->
       <div class="mobile-controls mobile-only">
         <button onclick="move('left')">◀</button>
         <button onclick="rotateBlock()">⟳</button>
         <button onclick="move('right')">▶</button>
         <button onclick="drop()">▼</button>
-        <button onclick="playerInstantDrop()">⤓</button>
+        <button onclick="instantDrop()">⤓</button>
       </div>
 
       <div id="overlay">
