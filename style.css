@@ -49,14 +49,12 @@ canvas#tetris {
   margin: 12px 0;
   font-weight: bold;
 }
-
 #score-container span {
   font-size: 20px;
   font-weight: bold;
   display: block;
   margin-top: 4px;
 }
-
 #next,
 #next-mobile {
   margin-top: 10px;
@@ -76,7 +74,6 @@ canvas#tetris {
   justify-content: center;
   z-index: 10;
 }
-
 #overlay.show {
   display: flex;
 }
@@ -88,7 +85,6 @@ canvas#tetris {
   border-radius: 10px;
   box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
 }
-
 #restart-btn {
   margin-top: 15px;
   padding: 10px 20px;
@@ -98,6 +94,9 @@ canvas#tetris {
   color: white;
   font-size: 16px;
   cursor: pointer;
+}
+#restart-btn:hover {
+  background-color: #e4476c;
 }
 
 #stage-popup {
@@ -115,20 +114,19 @@ canvas#tetris {
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
   z-index: 99;
 }
-
 #stage-popup.show {
   display: block;
 }
 
-/* 모바일 전용 */
+/* 🔧 모바일 숨김/표시 컨트롤 */
 .mobile-only {
   display: none;
 }
-
 .desktop-only {
   display: block;
 }
 
+/* 📱 모바일 스타일 */
 @media (max-width: 768px) {
   .title {
     display: none;
@@ -147,27 +145,35 @@ canvas#tetris {
     display: flex;
   }
 
-  .score-bar {
+  .mobile-header {
     flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-    width: 100%;
-    font-size: 14px;
+    justify-content: space-between;
+    width: 90%;
+    margin-top: 16px;
+  }
+
+  .score-bar {
     background: linear-gradient(180deg, #7f5af0, #ae7dfb);
-    padding: 10px 0;
+    padding: 8px;
+    border-radius: 10px;
+    flex: 1;
+    font-size: 14px;
+    text-align: center;
+    margin-right: 10px;
   }
 
   .score-bar span {
     font-size: 16px;
-    display: block;
-    margin-top: 4px;
     font-weight: bold;
   }
 
+  .mobile-preview {
+    text-align: center;
+  }
+
   .mobile-controls {
-    display: flex;
     justify-content: center;
-    margin-top: 10px;
+    margin-top: 16px;
     gap: 10px;
     flex-wrap: wrap;
   }

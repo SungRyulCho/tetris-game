@@ -8,27 +8,26 @@
   </head>
   <body>
     <div class="game-container">
-      <h1 class="title desktop-only">🎮 Modern Tetris</h1>
+      <h1 class="title">🎮 Modern Tetris</h1>
 
-      <!-- 모바일 전용 상단 점수판 + NEXT -->
-      <div class="score-bar mobile-only">
-        <div><strong>STAGE</strong><br /><span id="stage">1</span></div>
-        <div><strong>SCORE</strong><br /><span id="score">0</span></div>
-        <div><strong>BEST</strong><br /><span id="high-score">0</span></div>
-        <div>
-          <strong>NEXT</strong><br /><canvas
-            id="next-mobile"
-            width="60"
-            height="60"
-          ></canvas>
+      <!-- ✅ 모바일용 점수판 + NEXT 상단 -->
+      <div class="mobile-header mobile-only">
+        <div class="score-bar">
+          <div><strong>STAGE</strong><br /><span id="stage">1</span></div>
+          <div><strong>SCORE</strong><br /><span id="score">0</span></div>
+          <div><strong>BEST</strong><br /><span id="high-score">0</span></div>
+        </div>
+        <div class="mobile-preview">
+          <p><strong>NEXT</strong></p>
+          <canvas id="next-mobile" width="80" height="80"></canvas>
         </div>
       </div>
 
-      <!-- 캔버스와 데스크탑용 점수판 -->
+      <!-- ✅ 웹용 중앙 컨테이너 -->
       <div class="center-box">
         <canvas id="tetris" width="300" height="600"></canvas>
 
-        <!-- 웹용 점수판 -->
+        <!-- ✅ 웹용 점수판 -->
         <div id="score-container" class="desktop-only">
           <p><strong>STAGE</strong><br /><span id="stage">1</span></p>
           <p><strong>SCORE</strong><br /><span id="score">0</span></p>
@@ -38,7 +37,7 @@
         </div>
       </div>
 
-      <!-- 모바일 조작 버튼 -->
+      <!-- ✅ 모바일 조작 버튼 -->
       <div class="mobile-controls mobile-only">
         <button onclick="move('left')">◀</button>
         <button onclick="rotateBlock()">⟳</button>
@@ -56,6 +55,7 @@
 
       <div id="stage-popup"></div>
     </div>
+
     <script src="script.js"></script>
   </body>
 </html>
