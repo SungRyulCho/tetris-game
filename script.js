@@ -375,7 +375,7 @@ function move(dir) {
   }
 }
 
-function rotate() {
+function rotateBlock() {
   if (!running) return;
   playerRotate(1);
 }
