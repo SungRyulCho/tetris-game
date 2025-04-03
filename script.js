@@ -10,7 +10,7 @@ const sounds = {
   clear: new Audio("./sounds/clear.wav"),
   stageUp: new Audio("./sounds/stageup.wav"),
   gameOver: new Audio("./sounds/gameover.wav"),
-  bomb: new Audio("./sounds/bomb.wav"), // 폭발음
+  bomb: new Audio("./sounds/bomb.wav"),
   bgm: new Audio("./sounds/bgm.mp3"),
 };
 sounds.bgm.loop = true;
@@ -29,13 +29,13 @@ const colors = [
   "#66D9EF",
   "#FF9AC1",
   "#ffffff",
-  "#ff4444", // 10번: 폭탄 블록
+  "#ff4444",
 ];
 
 const pieces = "ILJOTSZU";
 
 function getRandomPiece() {
-  const isBomb = Math.random() < 0.1; // 10% 확률
+  const isBomb = Math.random() < 0.1;
   return isBomb ? "B" : pieces[(Math.random() * pieces.length) | 0];
 }
 
@@ -90,18 +90,16 @@ function createPiece(type) {
         [0, 0, 0],
       ];
     case "B":
-      return [[10]]; // 💣 폭탄 블록 (한 칸짜리)
+      return [[10]];
   }
 }
 
-function explodeBomb(centerX, centerY) {
-  for (let y = -1; y <= 1; y++) {
-    for (let x = -1; x <= 1; x++) {
-      const row = centerY + y;
-      const col = centerX + x;
-      if (arena[row] && arena[row][col] !== undefined) {
-        arena[row][col] = 0;
-      }
+function explodeBomb(x, y) {
+  for (let dy = -1; dy <= 1; dy++) {
+    for (let dx = -1; dx <= 1; dx++) {
+      const ny = y + dy,
+        nx = x + dx;
+      if (arena[ny] && arena[ny][nx] !== undefined) arena[ny][nx] = 0;
     }
   }
   player.score += 30;
@@ -110,20 +108,18 @@ function explodeBomb(centerX, centerY) {
 }
 
 function createMatrix(w, h) {
-  const matrix = [];
-  while (h--) matrix.push(new Array(w).fill(0));
-  return matrix;
+  return Array.from({ length: h }, () => Array(w).fill(0));
 }
 
 function drawMatrix(matrix, offset, ctx = context) {
-  matrix.forEach((row, y) => {
-    row.forEach((value, x) => {
-      if (value !== 0) {
-        ctx.fillStyle = colors[value];
+  matrix.forEach((row, y) =>
+    row.forEach((v, x) => {
+      if (v) {
+        ctx.fillStyle = colors[v];
         ctx.fillRect(x + offset.x, y + offset.y, 1, 1);
       }
-    });
-  });
+    })
+  );
 }
 
 function drawNext() {
@@ -137,34 +133,22 @@ function drawNext() {
 
 function collide(arena, player) {
   const [m, o] = [player.matrix, player.pos];
-  for (let y = 0; y < m.length; ++y) {
-    for (let x = 0; x < m[y].length; ++x) {
-      if (m[y][x] !== 0 && (arena[y + o.y] && arena[y + o.y][x + o.x]) !== 0) {
-        return true;
-      }
-    }
-  }
+  for (let y = 0; y < m.length; y++)
+    for (let x = 0; x < m[y].length; x++)
+      if (m[y][x] && arena[y + o.y]?.[x + o.x] !== 0) return true;
   return false;
 }
 
 function merge(arena, player) {
-  const { matrix, pos } = player;
-  for (let y = 0; y < matrix.length; ++y) {
-    for (let x = 0; x < matrix[y].length; ++x) {
-      const value = matrix[y][x];
-      if (value !== 0) {
-        const row = y + pos.y;
-        const col = x + pos.x;
-
-        // 💣 폭탄 블록 감지
-        if (value === 10) {
-          explodeBomb(col, row);
-        } else {
-          arena[row][col] = value;
-        }
-      }
-    }
-  }
+  player.matrix.forEach((row, y) => {
+    row.forEach((v, x) => {
+      if (!v) return;
+      const py = y + player.pos.y,
+        px = x + player.pos.x;
+      if (v === 10) explodeBomb(px, py);
+      else arena[py][px] = v;
+    });
+  });
 }
 
 function flashRow(y) {
@@ -182,18 +166,17 @@ function flashRow(y) {
 
 async function arenaSweep() {
   let rowCount = 1;
-  outer: for (let y = arena.length - 1; y >= 0; --y) {
-    const filled = arena[y].filter((cell) => cell !== 0).length;
-    if (filled / arena[y].length < 0.9) continue outer;
-
+  for (let y = arena.length - 1; y >= 0; y--) {
+    const filled = arena[y].filter((v) => v !== 0).length;
+    if (filled / arena[y].length < 0.9) continue;
     await flashRow(y);
     arena.splice(y, 1);
-    arena.unshift(new Array(arena[0].length).fill(0));
+    arena.unshift(Array(arena[0].length).fill(0));
     player.score += rowCount * 10;
     rowCount *= 2;
     updateScore();
     sounds.clear.play();
-    ++y;
+    y++;
   }
 }
 
@@ -203,9 +186,7 @@ function playerReset() {
   player.pos.y = 0;
   player.pos.x =
     ((arena[0].length / 2) | 0) - ((player.matrix[0].length / 2) | 0);
-  if (collide(arena, player)) {
-    gameOver();
-  }
+  if (collide(arena, player)) gameOver();
   drawNext();
 }
 
@@ -242,11 +223,9 @@ function playerRotate(dir) {
 }
 
 function rotate(matrix, dir) {
-  for (let y = 0; y < matrix.length; ++y) {
-    for (let x = 0; x < y; ++x) {
+  for (let y = 0; y < matrix.length; y++)
+    for (let x = 0; x < y; x++)
       [matrix[x][y], matrix[y][x]] = [matrix[y][x], matrix[x][y]];
-    }
-  }
   dir > 0 ? matrix.forEach((row) => row.reverse()) : matrix.reverse();
 }
 
@@ -312,28 +291,27 @@ function draw() {
   drawMatrix(player.matrix, player.pos);
 }
 
-document.addEventListener("keydown", (event) => {
+// 키보드 조작
+document.addEventListener("keydown", (e) => {
   if (!bgmStarted) {
     sounds.bgm.volume = 0.3;
     sounds.bgm.play();
     bgmStarted = true;
   }
-  if (!running && event.key !== "Enter") return;
+  if (!running && e.key !== "Enter") return;
 
-  switch (event.key) {
+  switch (e.key) {
     case "ArrowLeft":
-      player.pos.x--;
-      if (collide(arena, player)) player.pos.x++;
+      move("left");
       break;
     case "ArrowRight":
-      player.pos.x++;
-      if (collide(arena, player)) player.pos.x--;
+      move("right");
       break;
     case "ArrowDown":
       playerDrop();
       break;
     case "ArrowUp":
-      playerRotate(1);
+      rotateBlock();
       break;
     case " ":
       playerInstantDrop();
@@ -348,10 +326,10 @@ document.addEventListener("keydown", (event) => {
 
 document.getElementById("restart-btn").addEventListener("click", restartGame);
 
+// 초기 설정
 const arena = createMatrix(10, 20);
 const player = { pos: { x: 0, y: 0 }, matrix: null, score: 0 };
 const next = { matrix: createPiece(getRandomPiece()) };
-
 let dropCounter = 0;
 let dropInterval = 1000;
 let lastTime = 0;
@@ -363,16 +341,12 @@ playerReset();
 updateScore();
 update();
 
-// 📱 모바일 조작용 함수
+// 📱 모바일 전용 조작 함수
 function move(dir) {
   if (!running) return;
-  if (dir === "left") {
-    player.pos.x--;
-    if (collide(arena, player)) player.pos.x++;
-  } else if (dir === "right") {
-    player.pos.x++;
-    if (collide(arena, player)) player.pos.x--;
-  }
+  const dx = dir === "left" ? -1 : 1;
+  player.pos.x += dx;
+  if (collide(arena, player)) player.pos.x -= dx;
 }
 
 function rotateBlock() {

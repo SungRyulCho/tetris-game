@@ -123,7 +123,7 @@ canvas#tetris {
   display: block;
 }
 
-/* 📱 모바일 조작 버튼 */
+/* 📱 모바일 대응 */
 .mobile-controls {
   display: none;
   margin-top: 25px;
@@ -146,12 +146,38 @@ canvas#tetris {
   .center-box {
     flex-direction: column;
     align-items: center;
+    gap: 10px;
   }
 
   #score-container {
     position: static;
-    margin-top: 20px;
-    order: -1;
+    background: none;
+    box-shadow: none;
+    width: auto;
+    padding: 0;
+    margin-top: 10px;
+  }
+
+  .score-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  #score-container p {
+    margin: 0 6px;
+    font-size: 12px;
+    text-align: center;
+  }
+
+  #score-container span {
+    font-size: 14px;
+  }
+
+  #next {
+    margin-top: 6px;
+    width: 60px;
+    height: 60px;
   }
 
   .mobile-controls {
